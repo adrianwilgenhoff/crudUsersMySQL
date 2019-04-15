@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents all the user’s information.
@@ -41,7 +42,7 @@ public class User implements Serializable {
     @JsonIgnore
     @NotNull
     @Size(min = 1, max = 60)
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @NotNull
@@ -72,13 +73,13 @@ public class User implements Serializable {
 
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "telephone")
+    @Column(name = "telephone", unique = true)
     private String telephone;
 
     @NotNull
-    @Size(min = 1, max = 50)
+    // @Size(min = 1, max = 50)
     @Column(name = "dni")
-    private int dni;
+    private long dni;
 
     public User() {
     }
@@ -103,8 +104,9 @@ public class User implements Serializable {
      * @param dni       valor utilizado para configurar el dni del usuario.
      */
 
-    public User(String username, String password, String name, String lastname, String address, String city,
-            String email, String telephone, int dni) {
+    public User(Long id, String username, String password, String name, String lastname, String address, String city,
+            String email, String telephone, Long dni) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
@@ -132,10 +134,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
@@ -188,57 +192,12 @@ public class User implements Serializable {
         this.telephone = telephone;
     }
 
-    public int getDni() {
+    public long getDni() {
         return this.dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(long dni) {
         this.dni = dni;
-    }
-
-    public User username(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public User password(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public User name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public User lastname(String lastname) {
-        this.lastname = lastname;
-        return this;
-    }
-
-    public User address(String address) {
-        this.address = address;
-        return this;
-    }
-
-    public User city(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public User email(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public User telephone(String telephone) {
-        this.telephone = telephone;
-        return this;
-    }
-
-    public User dni(int dni) {
-        this.dni = dni;
-        return this;
     }
 
     @Override
