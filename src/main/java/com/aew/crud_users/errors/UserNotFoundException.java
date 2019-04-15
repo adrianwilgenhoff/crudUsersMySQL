@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
  * @author Adrian E. Wilgenhoff
  * 
  */
-@ResponseStatus(HttpStatus.CONFLICT)
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class UserNotFoundException extends Exception {
 
     private static final long serialVersionUID = -8675491583677452451L;
