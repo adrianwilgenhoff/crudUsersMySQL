@@ -25,12 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * REST controller for managing users. Controla las diferentes peticiones http
- * para operar con los usuarios tales como la creacion, obtencion, actualizacion
- * y eliminacion de usuarios. This class contains information and definition
- * about our Customers rest calls. We've defined rest methods, parameters and
- * path to manage the web services. This controller provide a REST api to
- * perform Users operations.
+ * REST controller for managing users. Contains information and definition about
+ * our Users rest calls.
  * 
  * @author Adrian E. Wilgenhoff
  */
@@ -56,12 +52,11 @@ public class UserController {
      * @return the ResponseEntity with status 200 (OK) and with body all users.
      * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
-
     @RequestMapping(value = USER, method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() throws UsersNotFoundException {
         List<User> users = userService.findAllUsers();
         if (users.isEmpty()) {
-            throw new UsersNotFoundException("No hay ningun usuario registrado");
+            throw new UsersNotFoundException("There are not any user registered");
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 
@@ -75,12 +70,11 @@ public class UserController {
      *         ordered.
      * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
-
     @RequestMapping(value = USER_ORD, method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsersOrdered() throws UsersNotFoundException {
         List<User> users = userService.findAllUserOrderedByLastname();
         if (users.isEmpty()) {
-            throw new UsersNotFoundException("No hay ningun usuario registrado");
+            throw new UsersNotFoundException("There are not any user registered");
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 
@@ -93,12 +87,11 @@ public class UserController {
      * @return the ResponseEntity with status 200 (OK) and with body the "id" user,
      * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
-
     @RequestMapping(value = USER_ID, method = RequestMethod.GET)
     public ResponseEntity<User> getUser(@PathVariable("id") long id) throws UserNotFoundException {
         User user = userService.findById(id);
         if (user == null) {
-            throw new UserNotFoundException("No existe un usuario para el ID ingresado");
+            throw new UserNotFoundException("User not found for this id");
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
@@ -117,7 +110,6 @@ public class UserController {
      * @throws UsernameAlreadyUsedException 409 (Conflict) if the username is
      *                                      already in use.
      */
-
     @RequestMapping(value = USER, method = RequestMethod.POST)
     public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder)
             throws BadRequestException, EmailAlreadyUsedException, UsernameAlreadyUsedException {
