@@ -25,9 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * REST controller for managing users Controla las diferentes peticiones http
+ * REST controller for managing users. Controla las diferentes peticiones http
  * para operar con los usuarios tales como la creacion, obtencion, actualizacion
- * y eliminacion de usuarios.
+ * y eliminacion de usuarios. This class contains information and definition
+ * about our Customers rest calls. We've defined rest methods, parameters and
+ * path to manage the web services. This controller provide a REST api to
+ * perform Users operations.
  * 
  * @author Adrian E. Wilgenhoff
  */
@@ -47,11 +50,11 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Devuelve una lista completa de todos los usuarios registrados em la base de
-     * datos.
+     * GET /user : Retrieve all Users. Return a list of the all users registered in
+     * database.
      * 
-     * @return List<User> lista de los usuarios registrados.
-     * @throws UsersNotFoundException
+     * @return the ResponseEntity with status 200 (OK) and with body all users.
+     * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
 
     @RequestMapping(value = USER, method = RequestMethod.GET)
@@ -65,11 +68,12 @@ public class UserController {
     }
 
     /**
-     * Devuelve una lista completa ordenada por apellido de todos los usuarios
-     * registrados em la base de datos.
+     * GET /user/ord : Retrieve all Users ordered. Return a list of the all users
+     * registered in database ordered by <code>lastname<code>.
      * 
-     * @return List<User> lista ordenada de los usuarios registrados.
-     * @throws UsersNotFoundException
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     *         ordered.
+     * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
 
     @RequestMapping(value = USER_ORD, method = RequestMethod.GET)
@@ -83,12 +87,11 @@ public class UserController {
     }
 
     /**
-     * Busca y devuelve un usuario a travez de su ID.
-     * 
-     * @param id valor requerido para busca un usuario.
-     * @return User si existe devuelve un usuario.
-     * @throws UserNotFoundException devuelve una excepcion si no encuentra el
-     *                               usuario.
+     * GET /users/:id : get the "id" user.
+     *
+     * @param id the id of the user to find
+     * @return the ResponseEntity with status 200 (OK) and with body the "id" user,
+     * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
 
     @RequestMapping(value = USER_ID, method = RequestMethod.GET)
@@ -101,14 +104,18 @@ public class UserController {
     }
 
     /**
-     * Crea un nuevo usuario y lo guarda en su base de datos
+     * POST /user : Creates a new user. Creates a new user if the mail and username
+     * are not already used.
      * 
-     * @param user      usuario con sus datos en formato JSON
+     * @param user      the user to create
      * @param ucBuilder
-     * @return
-     * @throws BadRequestException
-     * @throws EmailAlreadyUsedException
-     * @throws UsernameAlreadyUsedException
+     * @return the ResponseEntity with status 201 (Created) and the path new user.
+     * @throws BadRequestException          400 (Bad Request) if the new user
+     *                                      content an id.
+     * @throws EmailAlreadyUsedException    409 (Conflict) if the email is already
+     *                                      in use.
+     * @throws UsernameAlreadyUsedException 409 (Conflict) if the username is
+     *                                      already in use.
      */
 
     @RequestMapping(value = USER, method = RequestMethod.POST)
@@ -132,12 +139,11 @@ public class UserController {
     }
 
     /**
-     * Borra un usuario dado su username.
+     * DELETE /user/:username delete the "username" user.
      * 
-     * @param username
-     * @return
-     * @throws UserNotFoundException devuelve una excepcion si no encuentra el
-     *                               usuario
+     * @param username the username of the user to delete
+     * @return the ResponseEntity with status 204 (No Content).
+     * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
     @RequestMapping(value = USER_USERNAME, method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) throws UserNotFoundException {
@@ -147,17 +153,16 @@ public class UserController {
         }
         userService.deleteUserById(user.getId());
         LOG.info("Se ha borrado el usuario con username = " + username);
-        return new ResponseEntity<>("User Deleted", HttpStatus.OK);
+        return new ResponseEntity<>("User Deleted", HttpStatus.NO_CONTENT);
     }
 
     /**
-     * PUT /user/{username} : Updates an existing User.
+     * PUT /user/:username : Updates an existing User.
      * 
-     * @param username
-     * @param user
-     * @return the ResponseEntity with status 200 (OK) and with body the updated
-     *         user
-     * @throws UserNotFoundException
+     * @param username the username of the user to update
+     * @param user     the user to update
+     * @return the ResponseEntity with status 200 (OK)
+     * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
     @RequestMapping(value = USER_USERNAME, method = RequestMethod.PUT)
     public ResponseEntity<String> updateUser(@PathVariable("username") String username, @RequestBody User user)
