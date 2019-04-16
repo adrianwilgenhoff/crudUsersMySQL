@@ -33,13 +33,15 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/v1")
 public class UserController {
 
     private static final String USER_USERNAME = "/user/{username}";
     private static final String USER = "/user";
     private static final String USER_ORD = "/user/ord";
     private static final String USER_ID = "/user/{id}";
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -144,6 +146,7 @@ public class UserController {
             throw new UserNotFoundException("Username not found!");
         }
         userService.deleteUserById(user.getId());
+        LOG.info("Se ha borrado el usuario con username = " + username);
         return new ResponseEntity<>("User Deleted", HttpStatus.OK);
     }
 
