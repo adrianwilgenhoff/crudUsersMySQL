@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 /**
- * Indica que un email ya esta en uso.
+ * Informa que un email ya esta en uso. Retorna un Conflict code.
  * 
  * @author Adrian E. Wilgenhoff
  */

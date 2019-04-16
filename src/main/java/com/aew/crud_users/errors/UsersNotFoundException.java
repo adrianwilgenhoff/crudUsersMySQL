@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 /**
- * Exception para representar que no hay ningun usuario registrado en la base de
- * datos.
+ * Informa que no hay ningun usuario registrado en la base de datos. Retorna un
+ * No Content code.
  * 
  * @author Adrian E. Wilgenhoff
  * 

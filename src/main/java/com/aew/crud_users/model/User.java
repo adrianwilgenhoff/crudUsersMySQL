@@ -91,8 +91,9 @@ public class User implements Serializable {
      *                  usuario.
      * @param password  valor utilizado para configurar la contraseña de loggin del
      *                  usuario.
-     * @param name      valor utilizado para configurar el nombre del usuario.
-     * @param lastname  valor utilizado para configurar el apellido del usuario..
+     * @param name      valor utilizado para configurar el nombre real del usuario.
+     * @param lastname  valor utilizado para configurar el apellido real del
+     *                  usuario..
      * @param address   valor utilizado para configurar la direcccion donde vive el
      *                  usuario.
      * @param city      valor utilizado para configurar la ciudad de residencia del

@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 /**
- * Indica que ha habido una mala mala entrada de datos.
+ * Simple exception with a message, that returns an Bad Request code. Informa
+ * que ha habido una mala entrada de datos.
  * 
  * @author Adrian E. Wilgenhoff
  */

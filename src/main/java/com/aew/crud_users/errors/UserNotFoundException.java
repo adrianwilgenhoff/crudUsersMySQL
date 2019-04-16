@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 /**
- * Exception para representar que un usuario no ha sido encontrado.
+ * Informa que un usuario no ha sido encontrado en la base de datos. Retorna un
+ * Not Found code.
  * 
  * @author Adrian E. Wilgenhoff
  * 
