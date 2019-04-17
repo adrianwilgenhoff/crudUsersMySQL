@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Represents all the user’s information.
  * 
@@ -29,56 +31,65 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "The database generated user ID")
     private Long id;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "username", unique = true)
+    @ApiModelProperty(notes = "The username of the User", required = true)
     private String username;
 
     @JsonIgnore
     @NotNull
     @Size(min = 1, max = 60)
     @Column(name = "password", nullable = false)
+    @ApiModelProperty(notes = "The password for loggin of the User", required = true)
     private String password;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "name")
+    @ApiModelProperty(notes = "The name of the User", required = true)
     private String name;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "lastname")
+    @ApiModelProperty(notes = "The lastname of the User", required = true)
     private String lastname;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "address")
+    @ApiModelProperty(notes = "The address of the User", required = true)
     private String address;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "city")
+    @ApiModelProperty(notes = "The city of the User", required = true)
     private String city;
 
     @Email
     @NotNull
     @Size(min = 6, max = 50)
     @Column(name = "email", unique = true)
+    @ApiModelProperty(notes = "The email of the User", required = true)
     private String email;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "telephone", unique = true)
+    @ApiModelProperty(notes = "The telephone number of the User", required = true)
     private String telephone;
 
     @NotNull
     // @Size(min = 1, max = 50)
     @Column(name = "dni")
+    @ApiModelProperty(notes = "The dni of the User", required = true)
     private long dni;
 
     public User() {

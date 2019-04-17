@@ -13,8 +13,8 @@ public class EmailAlreadyUsedException extends Exception {
 
     private static final long serialVersionUID = -445598068086002523L;
 
-    public EmailAlreadyUsedException(String message) {
-        super(message);
+    public EmailAlreadyUsedException() {
+        super("Email is already in use");
 
     }
 

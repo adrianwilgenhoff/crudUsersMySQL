@@ -13,8 +13,8 @@ public class TelephoneAlreadyUsedExecption extends Exception {
 
     private static final long serialVersionUID = -7001177081389712932L;
 
-    public TelephoneAlreadyUsedExecption(String message) {
-        super(message);
+    public TelephoneAlreadyUsedExecption() {
+        super("Telephone number is already in use");
 
     }
 

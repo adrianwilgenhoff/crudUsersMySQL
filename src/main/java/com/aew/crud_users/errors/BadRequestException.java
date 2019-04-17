@@ -14,8 +14,8 @@ public class BadRequestException extends Exception {
 
     private static final long serialVersionUID = 7980625658990973035L;
 
-    public BadRequestException(String message) {
-        super(message);
+    public BadRequestException() {
+        super("Bad entry of data");
 
     }
 

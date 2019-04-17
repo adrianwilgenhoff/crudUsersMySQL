@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * REST controller for managing users. Contains information and definition about
  * our Users rest calls.
@@ -33,12 +38,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping(value = "/api/v1")
+@Api(value = "crudUsers", description = "Operations pertaining to users")
 public class UserController {
-
-    private static final String USER_USERNAME = "/user/{username}";
-    private static final String USER = "/user";
-    private static final String USER_ORD = "/user/ord";
-    private static final String USER_ID = "/user/{id}";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
@@ -52,11 +53,14 @@ public class UserController {
      * @return the ResponseEntity with status 200 (OK) and with body all users.
      * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
-    @RequestMapping(value = USER, method = RequestMethod.GET)
+    @ApiOperation(value = "View a list of users", notes = "Provides an operation to return all users")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 204, message = "No content to show", response = String.class) })
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() throws UsersNotFoundException {
         List<User> users = userService.findAllUsers();
         if (users.isEmpty()) {
-            throw new UsersNotFoundException("There are not any user registered");
+            throw new UsersNotFoundException();
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 
@@ -70,11 +74,12 @@ public class UserController {
      *         ordered.
      * @throws UsersNotFoundException 204 (No Content) if the database is empty.
      */
-    @RequestMapping(value = USER_ORD, method = RequestMethod.GET)
+    @ApiOperation(value = "View a list of ordered users")
+    @RequestMapping(value = "/users/sort", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsersOrdered() throws UsersNotFoundException {
         List<User> users = userService.findAllUserOrderedByLastname();
         if (users.isEmpty()) {
-            throw new UsersNotFoundException("There are not any user registered");
+            throw new UsersNotFoundException();
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 
@@ -87,11 +92,14 @@ public class UserController {
      * @return the ResponseEntity with status 200 (OK) and with body the "id" user,
      * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
-    @RequestMapping(value = USER_ID, method = RequestMethod.GET)
+    @ApiOperation(value = "Search a user with an ID", response = User.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved User", response = User.class),
+            @ApiResponse(code = 204, message = "User not found", response = String.class) })
+    @RequestMapping(value = "users/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> getUser(@PathVariable("id") long id) throws UserNotFoundException {
         User user = userService.findById(id);
         if (user == null) {
-            throw new UserNotFoundException("User not found for this id");
+            throw new UserNotFoundException();
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
@@ -110,21 +118,21 @@ public class UserController {
      * @throws UsernameAlreadyUsedException 409 (Conflict) if the username is
      *                                      already in use.
      */
-    @RequestMapping(value = USER, method = RequestMethod.POST)
+    @ApiOperation(value = "Add a User")
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
     public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder)
             throws BadRequestException, EmailAlreadyUsedException, UsernameAlreadyUsedException {
 
         if (user.getId() != null) {
-            throw new BadRequestException("A new user cannot already have an ID");
-            // Lowercase the user login before comparing with database
+            throw new BadRequestException();
         } else if (userService.findByEmail(user.getEmail()) != null) {
-            throw new EmailAlreadyUsedException("Email is already in use!");
+            throw new EmailAlreadyUsedException();
         } else if (userService.findByUsername(user.getUsername()) != null) {
-            throw new UsernameAlreadyUsedException("Username is already in use!");
+            throw new UsernameAlreadyUsedException();
         } else {
             userService.saveUser(user);
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(ucBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri());
+            headers.setLocation(ucBuilder.path("/api/v1/users/{id}").buildAndExpand(user.getId()).toUri());
             return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
         }
 
@@ -137,11 +145,12 @@ public class UserController {
      * @return the ResponseEntity with status 204 (No Content).
      * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
-    @RequestMapping(value = USER_USERNAME, method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete a User")
+    @RequestMapping(value = "users/{username}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) throws UserNotFoundException {
         User user = userService.findByUsername(username);
         if (user == null) {
-            throw new UserNotFoundException("Username not found!");
+            throw new UserNotFoundException();
         }
         userService.deleteUserById(user.getId());
         LOG.info("Se ha borrado el usuario con username = " + username);
@@ -156,13 +165,15 @@ public class UserController {
      * @return the ResponseEntity with status 200 (OK)
      * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
-    @RequestMapping(value = USER_USERNAME, method = RequestMethod.PUT)
+
+    @ApiOperation(value = "Update a User")
+    @RequestMapping(value = "users/{username}", method = RequestMethod.PUT)
     public ResponseEntity<String> updateUser(@PathVariable("username") String username, @RequestBody User user)
             throws UserNotFoundException {
 
         User currentUser = userService.findByUsername(username);
         if (user == null) {
-            throw new UserNotFoundException("Username not found!");
+            throw new UserNotFoundException();
         }
         currentUser.setAddress(user.getAddress());
         currentUser.setPassword(user.getPassword());
