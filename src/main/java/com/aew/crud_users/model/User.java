@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 
 /**
  * Represents all the user’s information.
@@ -28,6 +29,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "Users")
+@Builder
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

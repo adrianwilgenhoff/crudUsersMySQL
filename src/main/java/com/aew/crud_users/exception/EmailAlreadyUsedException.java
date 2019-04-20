@@ -1,4 +1,4 @@
-package com.aew.crud_users.errors;
+package com.aew.crud_users.exception;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;

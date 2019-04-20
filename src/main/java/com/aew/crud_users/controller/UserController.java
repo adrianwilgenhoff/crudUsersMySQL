@@ -2,17 +2,16 @@ package com.aew.crud_users.controller;
 
 import java.util.List;
 
-import com.aew.crud_users.errors.BadRequestException;
-import com.aew.crud_users.errors.EmailAlreadyUsedException;
-import com.aew.crud_users.errors.UserNotFoundException;
-import com.aew.crud_users.errors.UsernameAlreadyUsedException;
-import com.aew.crud_users.errors.UsersNotFoundException;
+import com.aew.crud_users.exception.BadRequestException;
+import com.aew.crud_users.exception.EmailAlreadyUsedException;
+import com.aew.crud_users.exception.UserNotFoundException;
+import com.aew.crud_users.exception.UsernameAlreadyUsedException;
+import com.aew.crud_users.exception.UsersNotFoundException;
 import com.aew.crud_users.model.User;
 import com.aew.crud_users.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,8 +46,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * GET /user : Retrieve all Users. Return a list of the all users registered in
-     * database.
+     * GET /user : Retrieve all Users.
      * 
      * @return the ResponseEntity with status 200 (OK) and with body all users.
      * @throws UsersNotFoundException 204 (No Content) if the database is empty.
@@ -86,15 +84,16 @@ public class UserController {
     }
 
     /**
-     * GET /users/:id : get the "id" user.
+     * GET /users/:id : get user by id.
      *
-     * @param id the id of the user to find
+     * @param id the user's id to find
      * @return the ResponseEntity with status 200 (OK) and with body the "id" user,
      * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
      */
     @ApiOperation(value = "Search a user with an ID", response = User.class)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved User", response = User.class),
             @ApiResponse(code = 204, message = "User not found", response = String.class) })
+
     @RequestMapping(value = "users/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> getUser(@PathVariable("id") long id) throws UserNotFoundException {
         User user = userService.findById(id);
@@ -106,7 +105,7 @@ public class UserController {
 
     /**
      * POST /user : Creates a new user. Creates a new user if the mail and username
-     * are not already used.
+     * are not already used and will have the auto-generated id.
      * 
      * @param user      the user to create
      * @param ucBuilder
@@ -120,7 +119,7 @@ public class UserController {
      */
     @ApiOperation(value = "Add a User")
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder)
+    public ResponseEntity<Void> createUser(@RequestBody User user)
             throws BadRequestException, EmailAlreadyUsedException, UsernameAlreadyUsedException {
 
         if (user.getId() != null) {
@@ -131,6 +130,7 @@ public class UserController {
             throw new UsernameAlreadyUsedException();
         } else {
             userService.saveUser(user);
+            UriComponentsBuilder ucBuilder = UriComponentsBuilder.newInstance();
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(ucBuilder.path("/api/v1/users/{id}").buildAndExpand(user.getId()).toUri());
             return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
@@ -143,7 +143,7 @@ public class UserController {
      * 
      * @param username the username of the user to delete
      * @return the ResponseEntity with status 204 (No Content).
-     * @throws UserNotFoundException 404 (Not Found) if the user can not be found.
+     * @throws UserNotFoundException 404 (Not Found) if not found.
      */
     @ApiOperation(value = "Delete a User")
     @RequestMapping(value = "users/{username}", method = RequestMethod.DELETE)
@@ -158,7 +158,7 @@ public class UserController {
     }
 
     /**
-     * PUT /user/:username : Updates an existing User.
+     * PUT /user/:username : Updates a user. User must exist for id.
      * 
      * @param username the username of the user to update
      * @param user     the user to update
