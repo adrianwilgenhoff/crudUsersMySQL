@@ -192,7 +192,7 @@ public class UserController {
         return new ResponseEntity<>("A user is updated", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/page={page}/size={size}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users?page={page}&size={size}", method = RequestMethod.GET)
     List<User> listAllUsersWithPagination(Pageable pageable, @PathVariable("page") int page,
             @PathVariable("size") int size) throws BadRequestException {
         // pageable = PageRequest.of(page, size);
