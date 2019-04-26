@@ -13,6 +13,10 @@ import com.aew.crud_users.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -185,6 +190,18 @@ public class UserController {
         currentUser.setEmail(user.getEmail());
         userService.updateUser(currentUser);
         return new ResponseEntity<>("A user is updated", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/users/page={page}/size={size}", method = RequestMethod.GET)
+    List<User> listAllUsersWithPagination(Pageable pageable, @PathVariable("page") int page,
+            @PathVariable("size") int size) throws BadRequestException {
+        // pageable = PageRequest.of(page, size);
+        pageable = PageRequest.of(page, size, Sort.by("name").descending().and(Sort.by("lastname").ascending()));
+        Page<User> user = userService.findAllUserPage(pageable);
+        if (page > user.getTotalPages()) {
+            throw new BadRequestException();
+        }
+        return user.getContent();
     }
 
 }

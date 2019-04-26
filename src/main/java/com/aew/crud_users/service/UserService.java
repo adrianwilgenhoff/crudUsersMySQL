@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.aew.crud_users.model.User;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
  * Service interface for managing users. Defines operations that every
  * UserServiceImpl should implement.
@@ -87,4 +90,6 @@ public interface UserService {
      * @return Return True if exist a user or false.
      */
     public boolean isUserExist(User user);
+
+    public Page<User> findAllUserPage(Pageable pageable);
 }
